@@ -1,24 +1,30 @@
-import logo from './logo.svg';
-import './App.css';
+
+import { useState } from "react";
+import EditTodos from "./components/EditTodos";
+import Navbar from "./components/Navbar";
+import { Todos } from "./components/Todos";
+import { DataProvider } from "./context/DataContext";
+import Modal from "./components/Modal";
 
 function App() {
+  const [selectedItem, setSelectedItem] = useState(null);
+  const [showModal, setShowModal] = useState(false)
+  console.log('showModal',showModal)
+  const selectedData = data => {
+    setSelectedItem(data);
+    setShowModal(true);
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <DataProvider>
+      <div className="bg-gray-500">
+        <Navbar />
+        <Todos selectedData={selectedData} />
+        {(!!selectedItem && showModal) && <Modal isVisible={showModal || selectedItem} onClose={()=>setShowModal(false)} >
+          <EditTodos selectedData={selectedItem} onCloseModal={value=>setShowModal(value)}/>
+        </Modal>}
+      </div>
+    </DataProvider>
   );
 }
 
